@@ -552,7 +552,10 @@ class Monster:
         spell_dc = 8
 
         # Since weapon is first, we just make it our max DPR and to_hit
-        damage_per_round = self._weapons.get_dpr_max() * self._attacks_per_round
+        damage_per_round = (
+            self._weapons.get_dpr_max() *
+            self._attacks_per_round
+        )
         to_hit = self._weapons.get_to_hit_max()
 
         # Leveled Cantrips, if applicable.
@@ -599,7 +602,7 @@ class Monster:
         Gets our Extra Value, from Traits
         """
 
-        return self.get_extra(extra, self.TRAITS)
+        return self.get_extra(extra, TRAITS)
 
     def get_formated_string(self, title, value, newline=True, dashes=True):
         """
@@ -700,7 +703,10 @@ class Monster:
         Get HP Con Addition
         """
 
-        return self._stats.get_stat_bonus(StatsEnum.CONSTITUTION) * self._hit_dice._count
+        return (
+            self._stats.get_stat_bonus(StatsEnum.CONSTITUTION) *
+            self._hit_dice._count
+        )
 
     def get_hp_rolled(self):
         """
@@ -848,11 +854,19 @@ class Monster:
 
         # Iterate our SAVING_THROWS
         for saving_throw in self._saving_throws_list:
-            saving_throw_bonus = self.get_prof_bonus() + self._stats.get_stat_bonus(saving_throw)
-            saving_throws.append(f"{saving_throw.name} {number_signed(saving_throw_bonus)}")
+            saving_throw_bonus = (
+                self.get_prof_bonus() +
+                self._stats.get_stat_bonus(saving_throw)
+            )
+            saving_throws.append(
+                f"{saving_throw.name} {number_signed(saving_throw_bonus)}"
+            )
 
         # Return String
-        return self.get_formated_string("\nSAVING_THROWS ", spaced_list(saving_throws, ', '), False, False)
+        return self.get_formated_string(
+            "\nSAVING_THROWS ", spaced_list(saving_throws, ', '),
+            False, False
+        )
 
     def get_senses_string(self):
         """
@@ -867,7 +881,10 @@ class Monster:
             senses.append(f"{sense.name}: {value}")
 
         # Return
-        return self.get_formated_string("", spaced_list(senses, 'ft, ', True), False, False)
+        return self.get_formated_string(
+            "", spaced_list(senses, 'ft, ', True),
+            False, False
+        )
 
     def get_skill_bonus(self, skill):
         """
@@ -908,24 +925,34 @@ class Monster:
 
             # Get the Skill Bonus Total, if we have a base bonus
             if value != 0:
-                skills.append(f"{skill.name} { number_signed(self.get_skill_bonus(skill))}")
+                skills.append(
+                    f"{skill.name} "
+                    f"{number_signed(self.get_skill_bonus(skill))}"
+                )
 
         # Return
-        return self.get_formated_string("\nSkills: ", spaced_list(skills, ', '), False, False)
+        return self.get_formated_string(
+            "\nSkills: ", spaced_list(skills, ', '),
+            False, False
+        )
+
+    def get_special_function(self, special):
+        """
+        Gets a Special Ability's Function
+        """
+
+        return SPECIALS[special][SpecialsEnum.EXTRA][ExtrasEnum.FUNCTION]
 
     def get_special_result(self, special):
         """
         Gets a Special Ability Result
         """
 
-        # Grab our Special Function
-        special_function = SPECIALS[special][SpecialsEnum.EXTRA][ExtrasEnum.FUNCTION]
-
         # Execute the String as Code
-        exec(special_function[1])
+        exec(self.get_special_function(special)[1])
 
         # Now that it is stored in this instance, we call it.
-        return locals()[special_function[0]](self)
+        return locals()[self.get_special_function(special)[0]](self)
 
     def get_special_string(self, action, spacer="\n"):
         """
@@ -936,14 +963,20 @@ class Monster:
         specials = []
 
         # Iterate Special
-        for special in SPECIALS:
+        for name in SPECIALS:
+
+            # Special Data
+            data = SPECIALS[name]
 
             # What type?
-            if action == SPECIALS[special][SpecialsEnum.TYPE]:
+            if action == data[SpecialsEnum.TYPE]:
 
                 # Check Function
-                if self.get_special_result(special):
-                    specials.append(f"{special}. {SPECIALS[special][SpecialsEnum.DESCRIPTION].format(self)}")
+                if self.get_special_result(name):
+                    specials.append(
+                        f"{name}. "
+                        f"{data[SpecialsEnum.DESCRIPTION].format(self)}"
+                    )
 
         # Return
         return f"{spaced_list(specials, spacer)}"
@@ -1008,7 +1041,9 @@ class Monster:
         spell_string = ""
 
         # Caster Level, with th.. etc.
-        caster_level = number_ord(self._class_dict[ClassEnum.SPELLCASTER][SpellCasterEnum.LEVEL])
+        caster_level = number_ord(
+            self._class_dict[ClassEnum.SPELLCASTER][SpellCasterEnum.LEVEL]
+        )
 
         # save DC8
         save_dc = self._spells.get_save_dc()
@@ -1017,22 +1052,35 @@ class Monster:
         to_hit = number_signed(self._spells.get_to_hit())
 
         # Build it!
-        spell_string = f"SPELLCASTING.\nThe {self._name} is a {caster_level}-level spellcaster. Its spellcasting ability is {self._spells.get_stat().name} (spell save DC {save_dc}, {to_hit} to hit with spell attacks.)  It has the following spells prepared:\n"
+        spell_string = (
+            f"SPELLCASTING.\nThe {self._name} is a {caster_level}"
+            f"-level spellcaster. Its spellcasting ability is"
+            f"{self._spells.get_stat().name} (spell save DC {save_dc},"
+            f"{to_hit} to hit with spell attacks.)  It has the"
+            f"following spells prepared:\n"
+        )
 
         # Cantrip
         if len(self._spells.get_cantrips()):
-            spell_string = f"{spell_string}\nCantrips (at will): {spaced_list(self._spells.get_cantrips(), ', ')}"
+            spell_string = (
+                f"{spell_string}\nCantrips (at will): "
+                f"{spaced_list(self._spells.get_cantrips(), ', ')}"
+            )
 
         # Leveled?
         for spell_level in range(1, self._spells.get_max_spell_level()):
             spells = self._spells.get_spell_list(spell_level)
             if spells:
-                spell_string = f"{spell_string}\n{number_ord(spell_level)} Level ({self._spells._spells_per_level[spell_level]} slots): {spaced_list(spells, ', ')}"
+                spell_string = (
+                    f"{spell_string}\n{number_ord(spell_level)} "
+                    f"Level ({self._spells._spells_per_level[spell_level]} "
+                    f"slots): {spaced_list(spells, ', ')}"
+                )
 
         # Return
         return f"\n{spell_string}\n{DASHES}"
 
-    def get_traits_string(self, action_type, spacer = "\n"):
+    def get_traits_string(self, action_type, spacer="\n"):
         """
         Gets Traits, returning a string of each trait formatted with
         Squigglies removed.
@@ -1045,19 +1093,25 @@ class Monster:
         trait_recharge_group = []
 
         # Iterate!
-        for trait in self._traits_list:
+        for name in self._traits_list:
+
+            # Trait Data
+            data = TRAITS[name]
 
             # The type we want?
-            if action_type == TRAITS[trait][TraitsEnum.TYPE]:
+            if action_type == data[TraitsEnum.TYPE]:
 
                 # Replaces Bracket Values with REAL values!
-                trait_description = TRAITS[trait][TraitsEnum.DESCRIPTION].format(self)
+                description = data[TraitsEnum.DESCRIPTION].format(self)
 
                 # String, formatted.
-                trait_string = f"{trait}. {trait_description}"
+                trait_string = f"{name}. {description}"
 
                 # This have recharge?
-                if ExtrasEnum.RECHARGE_TYPE in TRAITS[trait][TraitsEnum.EXTRA] and TRAITS[trait][TraitsEnum.EXTRA][ExtrasEnum.RECHARGE_TYPE] == RechargeTypeEnum.GROUP_LEVEL:
+                if (
+                    ExtrasEnum.RECHARGE_TYPE in data[TraitsEnum.EXTRA] and
+                    data[TraitsEnum.EXTRA][ExtrasEnum.RECHARGE_TYPE] == RechargeTypeEnum.GROUP_LEVEL
+                ):
                     trait_recharge_group.append(trait_string)
                 else:
                     traits.append(trait_string)
@@ -1082,9 +1136,11 @@ class Monster:
             traits.extend(trait_recharge_group)
 
         # Data?
-        return self.get_formated_string("", spaced_list(traits, spacer), False, False)
+        return self.get_formated_string(
+            "", spaced_list(traits, spacer), False, False
+        )
 
-    def get_weapon_property_count(self, action_property, included = True):
+    def get_weapon_property_count(self, action_property, included=True):
         """
         Used for our Special Function
         """
@@ -1098,7 +1154,10 @@ class Monster:
 
         return extra in dict_to_search
 
-    def has_extra_from_list(self, extra, list_to_search, dict_to_search, extra_enum):
+    def has_extra_from_list(
+        self, extra, list_to_search,
+        dict_to_search, extra_enum
+    ):
         """
         Do we have this extra?
         """
@@ -1134,15 +1193,27 @@ class Monster:
         size_requirement_met = True
 
         # Sizes
-        if ExtrasEnum.SIZES_REQUIRED in extras and self._size not in extras[ExtrasEnum.SIZES_REQUIRED]:
+        if (
+            ExtrasEnum.SIZES_REQUIRED in extras and
+            self._size not in extras[ExtrasEnum.SIZES_REQUIRED]
+        ):
             size_requirement_met = False
-        elif ExtrasEnum.SIZES_EXEMPT in extras and self._size in extras[ExtrasEnum.SIZES_EXEMPT]:
+        elif (
+            ExtrasEnum.SIZES_EXEMPT in extras and
+            self._size in extras[ExtrasEnum.SIZES_EXEMPT]
+        ):
             size_requirement_met = False
 
         # Races
-        if ExtrasEnum.RACES_REQUIRED in extras and self._race not in extras[ExtrasEnum.RACES_REQUIRED]:
+        if (
+            ExtrasEnum.RACES_REQUIRED in extras and
+            self._race not in extras[ExtrasEnum.RACES_REQUIRED]
+        ):
             race_requirement_met = False
-        elif ExtrasEnum.RACES_EXEMPT in extras and self._race in extras[ExtrasEnum.RACES_EXEMPT]:
+        elif (
+            ExtrasEnum.RACES_EXEMPT in extras and
+            self._race in extras[ExtrasEnum.RACES_EXEMPT]
+        ):
             race_requirement_met = False
 
         # Return!
@@ -1232,7 +1303,10 @@ class Monster:
 
         # Add Spells
         for spell in innate_caster_list[InnateCasterEnum.SPELL_DICT]:
-            self.add_spell(spell, innate_caster_list[InnateCasterEnum.SPELL_DICT][spell], self.innate)
+            self.add_spell(
+                spell, innate_caster_list[InnateCasterEnum.SPELL_DICT][spell],
+                self.innate
+            )
 
     def setup_spells(self):
         """
@@ -1257,7 +1331,10 @@ class Monster:
 
         # Add Spells
         for spell in spell_caster_list[SpellCasterEnum.LIST]:
-            self.add_spell(spell, SPELLS[spell][SpellsEnum.LEVEL], self._spells)
+            self.add_spell(
+                spell, SPELLS[spell][SpellsEnum.LEVEL],
+                self._spells
+            )
 
     def __str__(self):
         """
@@ -1268,16 +1345,24 @@ class Monster:
         challenge_rating, _, _ = self.get_cr()
 
         # Bonus Action
-        bonus_action = self.get_special_and_traits_string("Bonus Actions", ActionTypesEnum.BONUS)
+        bonus_action = self.get_special_and_traits_string(
+            "Bonus Actions", ActionTypesEnum.BONUS
+        )
 
         # Other
-        other_actions = self.get_special_and_traits_string("Other", ActionTypesEnum.NONE)
+        other_actions = self.get_special_and_traits_string(
+            "Other", ActionTypesEnum.NONE
+        )
 
         # Reactions
-        reactions = self.get_special_and_traits_string("Reactions", ActionTypesEnum.REACTION)
+        reactions = self.get_special_and_traits_string(
+            "Reactions", ActionTypesEnum.REACTION
+        )
 
         # Standard Actions
-        standard_actions = self.get_special_and_traits_string("", ActionTypesEnum.STANDARD)
+        standard_actions = self.get_special_and_traits_string(
+            "", ActionTypesEnum.STANDARD
+        )
 
         # Return it!
         return (
@@ -1292,9 +1377,11 @@ class Monster:
                 f"\n{DASHES}"
                 f"{self.get_saving_throws_string()}{self.get_skills_string()}"
                 f"{self.get_rvii_string()}"
-                f"\nSenses: {self.get_senses_string()}passive perception {self.get_passive_skill(SkillsEnum.PERCEPTION)}"
+                f"\nSenses: {self.get_senses_string()}passive perception"
+                f"{self.get_passive_skill(SkillsEnum.PERCEPTION)}"
                 f"\nLanguages: {spaced_list(self._languages_list, ', ')}"
-                f"\nChallenge {challenge_rating} ({ get_xp_by_cr(challenge_rating)} xp)"
+                f"\nChallenge {challenge_rating}"
+                f"({ get_xp_by_cr(challenge_rating)} xp)"
                 f"\n{DASHES}"
                 f"{self.get_innate_string()}"
                 f"{self.get_spells_string()}"
