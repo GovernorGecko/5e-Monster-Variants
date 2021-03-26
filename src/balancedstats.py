@@ -39,7 +39,7 @@ import math
 import random
 
 # Mines
-from .dice import Dice
+from .ext.dice import Dice
 from .enumerators import StatsEnum
 from .universals import number_signed, range_dict_from_list
 

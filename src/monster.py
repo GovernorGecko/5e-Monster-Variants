@@ -15,7 +15,7 @@ from .armors import Armors
 from .challengerating import cr_defense, cr_offense, get_cr_from_row, get_monster_stats_from_cr, get_xp_by_cr
 from .balancedstats import BalancedStats
 from .enumerators import ActionPropertiesEnum, ActionTypesEnum, ClassEnum,  ExtrasEnum, InnateCasterEnum, MonsterStatsByCrEnum, MovementEnum, RechargeTypeEnum, SkillsEnum, SpecialsEnum, SpellCasterEnum, SpellsEnum, StatsEnum, TraitsEnum
-from .dice import Dice
+from .ext.dice import Dice
 from .settings import *
 from .spells import Spells
 from .universals import get_json_data, number_signed, range_dict_from_list, spaced_list, number_ord
