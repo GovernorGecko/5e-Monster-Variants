@@ -178,9 +178,7 @@ class Monster:
         self._condition_immunities_list = condition_immunities_list
 
         # Set our Stats
-        self._stats = BalancedStats()
-        self._stats.update_settings(points_to_spend=0, maximum_stat=30)
-        self._stats.set_stats_from_list(stat_list)
+        self._stats = BalancedStats(stats=stat_list, extra_points=0, maximum_stat=30)
 
         # Lists and Dicts Initializers
         self._armors = Armors(self._stats, ARMOR)
@@ -699,7 +697,7 @@ class Monster:
         """
 
         return (
-            self._stats.get_stat_bonus(StatsEnum.CONSTITUTION) *
+            self._stats.get_stat_bonus(StatsEnum.CONSTITUTION.value) *
             self._hit_dice._count
         )
 
@@ -899,7 +897,7 @@ class Monster:
 
                 # Depending on the main Stat for this skill, we then
                 # add Stat Weight
-                stat_weight = self._stats.get_stat_bonus(stat)
+                stat_weight = self._stats.get_stat_bonus(stat.value)
 
                 # Return
                 return (skill_bonus + stat_weight)
