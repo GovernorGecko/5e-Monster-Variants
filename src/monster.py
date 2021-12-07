@@ -18,7 +18,7 @@ from .challengerating import (
 )
 from .TbTBalancedStats.src.balancedstats import BalancedStats
 from .enumerators import ActionPropertiesEnum, ActionTypesEnum, ClassEnum,  ExtrasEnum, InnateCasterEnum, MonsterStatsByCrEnum, MovementEnum, RechargeTypeEnum, SkillsEnum, SpecialsEnum, SpellCasterEnum, SpellsEnum, StatsEnum, TraitsEnum
-from .ext.dice import Dice
+from .Dice.src.dice import Dice
 from .settings import *
 from .spells import Spells
 from .universals import (
@@ -167,6 +167,8 @@ class Monster:
         self._race = race
         self._alignment = alignment
         self._hit_dice = Dice(size.value, hit_dice_count)
+        self._hit_dice_size = size.value
+        self._hit_dice_count = hit_dice_count
         self._expected_cr = expected_cr
         self._attacks_per_round = attacks_per_round
         self._class_dict = class_dict
@@ -178,7 +180,7 @@ class Monster:
         self._condition_immunities_list = condition_immunities_list
 
         # Set our Stats
-        self._stats = BalancedStats(stats=stat_list, extra_points=0, maximum_stat=30)
+        self._stats = BalancedStats(stats=stat_list, extra_points=0) #, maximum_stat=30)
 
         # Lists and Dicts Initializers
         self._armors = Armors(self._stats, ARMOR)
@@ -698,7 +700,7 @@ class Monster:
 
         return (
             self._stats.get_stat_bonus(StatsEnum.CONSTITUTION.value) *
-            self._hit_dice._count
+            self._hit_dice_count
         )
 
     def get_hp_rolled(self):
@@ -741,7 +743,7 @@ class Monster:
         cr, _, _ = self.get_cr()
 
         # Roll a d100! (really a d99... we count 0 as 100)
-        die = Dice(99, 1).roll_single()
+        die = Dice(100, 1).roll_sum()
 
         # Now, get our monies!
         list_of_dice_rolls = LOOT[cr][die]
@@ -750,7 +752,7 @@ class Monster:
         total_money = []
         for i in list_of_dice_rolls:
             if i is not None:
-                total_money.append(i.roll_sum_single())
+                total_money.append(i.roll_sum())
             else:
                 total_money.append(0)
 

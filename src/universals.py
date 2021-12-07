@@ -12,7 +12,7 @@ import json
 import os
 
 # Moinee
-from .ext.dice import Dice
+from .Dice.src.dice import Dice
 from .enumerators import (
     ArmorSlotsEnum, ActionPropertiesEnum, ActionTypesEnum,
     ClassEnum, ConditionTypesEnum, DamageTypesEnum, ExtrasEnum,

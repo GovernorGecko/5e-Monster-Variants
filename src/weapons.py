@@ -54,7 +54,7 @@ class Weapon():
         self._dice = self._data[
             WeaponsEnum.DAMAGE_DICE
         ].get_scaled(self._scale)
-        self._dice.update(count=self._dice._count + size_count_bonus)
+        # self._dice.update(count=self._dice._count + size_count_bonus)
 
     def __str__(self):
         """
