@@ -19,7 +19,7 @@ from .enumerators import (
     MonsterPropertiesEnum, MovementEnum, RaceEnum, RechargeTypeEnum,
     SenseEnum, SizeEnum, SkillsEnum, StatsEnum
 )
-from .ext.rangeddict import RangedDict
+from .RangedDict.src.rangeddict import RangedDict
 from .settings import JSON_DIR
 
 

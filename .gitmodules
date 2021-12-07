@@ -4,3 +4,6 @@
 [submodule "src/Dice"]
 	path = src/Dice
 	url = https://github.com/GovernorGecko/Dice.git
+[submodule "src/RangedDict"]
+	path = src/RangedDict
+	url = https://github.com/GovernorGecko/RangedDict.git
