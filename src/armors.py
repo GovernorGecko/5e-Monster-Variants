@@ -121,7 +121,7 @@ class Armors():
         ac = 10
 
         # Dex Bonus
-        dex_bonus = self._stats.get_stat_bonus(StatsEnum.DEXTERITY)
+        dex_bonus = self._stats.get_stat_bonus(StatsEnum.DEXTERITY.value)
 
         # Do we have any armor?
         for armor in self._armor_list:

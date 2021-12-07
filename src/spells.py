@@ -153,7 +153,7 @@ class Spells():
         Gets our Spell stat Bonus
         """
 
-        return self._stats.get_stat_bonus(self.get_stat())
+        return self._stats.get_stat_bonus(self.get_stat().value)
 
     def get_to_hit(self):
         """

@@ -54,7 +54,7 @@ class Weapon():
         self._dice = self._data[
             WeaponsEnum.DAMAGE_DICE
         ].get_scaled(self._scale)
-        self._dice.update(count=self._dice._count + size_count_bonus)
+        # self._dice.update(count=self._dice._count + size_count_bonus)
 
     def __str__(self):
         """
@@ -94,8 +94,8 @@ class Weapon():
         """
 
         # STR/DEX Bonuses
-        str_stat_bonus = self._stats.get_stat_bonus(StatsEnum.STRENGTH)
-        dex_stat_bonus = self._stats.get_stat_bonus(StatsEnum.DEXTERITY)
+        str_stat_bonus = self._stats.get_stat_bonus(StatsEnum.STRENGTH.value)
+        dex_stat_bonus = self._stats.get_stat_bonus(StatsEnum.DEXTERITY.value)
 
         # If this is a Finesse weapon, use the higher of STR/DE
         if self.has_action_property(ActionPropertiesEnum.FINESSE):

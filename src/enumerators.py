@@ -283,12 +283,12 @@ class StatsEnum(Enum):
     Statsss!
     """
 
-    STRENGTH = 0
-    DEXTERITY = 1
-    CONSTITUTION = 2
-    INTELLIGENCE = 3
-    WISDOM = 4
-    CHARISMA = 5
+    STRENGTH = "STRENGTH"
+    DEXTERITY = "DEXTERITY"
+    CONSTITUTION = "CONSTITUTION"
+    INTELLIGENCE = "INTELLIGENCE"
+    WISDOM = "WISDOM"
+    CHARISMA = "CHARISMA"
 
 
 class TraitsEnum(IntEnum):

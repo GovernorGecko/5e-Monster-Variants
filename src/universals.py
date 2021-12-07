@@ -12,14 +12,14 @@ import json
 import os
 
 # Moinee
-from .ext.dice import Dice
+from .Dice.src.dice import Dice
 from .enumerators import (
     ArmorSlotsEnum, ActionPropertiesEnum, ActionTypesEnum,
     ClassEnum, ConditionTypesEnum, DamageTypesEnum, ExtrasEnum,
     MonsterPropertiesEnum, MovementEnum, RaceEnum, RechargeTypeEnum,
     SenseEnum, SizeEnum, SkillsEnum, StatsEnum
 )
-from .ext.rangeddict import RangedDict
+from .RangedDict.src.rangeddict import RangedDict
 from .settings import JSON_DIR
 
 
