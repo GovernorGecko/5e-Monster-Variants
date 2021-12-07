@@ -1,0 +1,3 @@
+[submodule "src/TbTBalancedStats"]
+	path = src/TbTBalancedStats
+	url = https://github.com/GovernorGecko/TbTBalancedStats.git
